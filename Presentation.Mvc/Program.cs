@@ -1,10 +1,13 @@
+using BlobStorage;
+using Wolverine;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Host.UseWolverine();
+builder.Services.BlobStorageInstall();
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

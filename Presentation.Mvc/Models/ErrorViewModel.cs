@@ -1,4 +1,4 @@
-namespace asyncDemo.Models;
+namespace Presentation.Mvc.Models;
 
 public class ErrorViewModel
 {
