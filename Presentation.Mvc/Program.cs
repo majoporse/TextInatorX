@@ -1,4 +1,5 @@
 using BlobStorage;
+using Persistence;
 using Wolverine;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Host.UseWolverine();
-builder.Services.BlobStorageInstall();
+builder.Services.BlobStorageInstall(builder.Configuration);
+builder.Services.PersistenceInstall(builder.Configuration);
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -24,9 +27,9 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+        "default",
+        "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 
-app.Run();
+await app.RunAsync();

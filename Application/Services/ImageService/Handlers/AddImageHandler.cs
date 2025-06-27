@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.Services.Interfaces;
 using Domain.Entities;
 using ErrorOr;
 
@@ -7,7 +6,7 @@ namespace Application.Services.ImageService.Handlers;
 
 public record AddImageHandlerRequest(string Name, Stream FileStream)
 {
-    public record Result(Image Image);
+    public record Result(Image Image, string ImageUrl);
 }
 
 public class AddImageHandler(IImageRepository imageRepository, IImageStorage imagesStorage)
@@ -18,9 +17,10 @@ public class AddImageHandler(IImageRepository imageRepository, IImageStorage ima
         var image = await imageRepository.SaveImage(request.Name);
         if (image is null)
             return Error.NotFound($"Image with ID {request.Name} not found.");
-        
-        await imagesStorage.UploadFileAsync(image.Id, request.FileStream);
 
-        return new AddImageHandlerRequest.Result(image);
+        await imagesStorage.UploadFileAsync(image.Id, request.FileStream, cancellationToken);
+        var imageUrl = imagesStorage.GetImageUrl(image.Id);
+
+        return new AddImageHandlerRequest.Result(image, imageUrl);
     }
 }

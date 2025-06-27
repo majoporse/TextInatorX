@@ -17,8 +17,4 @@
         <PackageReference Include="WolverineFx" Version="4.4.0"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Services\ImageService\Commands\"/>
-    </ItemGroup>
-
 </Project>
