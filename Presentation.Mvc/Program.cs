@@ -1,3 +1,4 @@
+using Application;
 using BlobStorage;
 using Persistence;
 using Wolverine;
@@ -9,6 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Host.UseWolverine();
 builder.Services.BlobStorageInstall(builder.Configuration);
 builder.Services.PersistenceInstall(builder.Configuration);
+builder.Services.ApplicationInstall();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

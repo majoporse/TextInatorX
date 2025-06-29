@@ -6,37 +6,16 @@ namespace Persistence.Database.EF;
 
 public class ImageRepository : IImageRepository
 {
-    private readonly ApplicationDbContext db;
-    private Repository<Image> repository;
-    
+    private readonly Repository<Image> repository;
+
     public ImageRepository(ApplicationDbContext context)
     {
-        db = context;
         repository = new Repository<Image>(context);
     }
-    
+
     public async Task<Image?> GetImageById(Guid id)
     {
-        return (await repository.Get((image) => image.Id == id).ToListAsync()).FirstOrDefault();
-    }
-
-    public async Task<Image?> SaveImage(string name)
-    {
-        var image = new Image()
-        {
-            Name = name,
-        };
-        try
-        {
-            await repository.Insert(image);
-            await repository.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error saving image: {ex.Message}");
-            return null;
-        }
-        return image;
+        return (await repository.Get(image => image.Id == id).ToListAsync()).FirstOrDefault();
     }
 
     public async Task<Image?> UpdateImage(Image image)
@@ -53,6 +32,31 @@ public class ImageRepository : IImageRepository
             return null;
         repository.Delete(id);
         await repository.SaveChangesAsync();
+        return image;
+    }
+
+    public async Task<IEnumerable<Image>> GetAllImagesAsync()
+    {
+        return await repository.Get().ToListAsync();
+    }
+
+    public async Task<Image?> SaveImage(string name)
+    {
+        var image = new Image
+        {
+            Name = name
+        };
+        try
+        {
+            await repository.Insert(image);
+            await repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving image: {ex.Message}");
+            return null;
+        }
+
         return image;
     }
 }

@@ -2,5 +2,5 @@
 
 public class ImageUploadModel
 {
-    public byte[] ImageData { get; set; }
+    public IFormFile ImageData { get; set; }
 }

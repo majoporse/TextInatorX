@@ -1,0 +1,29 @@
+﻿@model ImagesViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Images</h2>
+
+<div class="row">
+    @foreach (var image in Model.Images)
+    {
+        <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="card" style="width: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="image-placeholder">
+                    <img src="@image.Url" class="pretty-image-card" alt="couldn't load"/>
+                </div>
+                <div class="card-body" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="card-text" style="text-overflow: ellipsis">
+                        @image.Name
+                    </div>
+                    <div class="card-text date-text">
+                        @image.CreatedAt.ToString("MMMM dd, yyyy") <span class="bi bi-calendar"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
 
 namespace BlobStorage;
@@ -17,16 +18,14 @@ public class AzureBlobStorage : IImageStorage
 
     public AzureBlobStorage(BlobServiceClient blobServiceClient, IOptions<StorageOptions> storageOptions)
     {
-        var client = blobServiceClient.CreateBlobContainer(storageOptions.Value.ContainerName);
-        if (client.GetRawResponse().IsError) throw new BlobStorageException(client.GetRawResponse().ToString());
-
-        if (!client.Value.Exists()) throw new BlobStorageException(client.GetRawResponse().ToString());
-
-        blobContainerClient = client.Value;
+        blobContainerClient = blobServiceClient.GetBlobContainerClient(storageOptions.Value.ContainerName);
+        blobContainerClient.CreateIfNotExists();
+        blobContainerClient.SetAccessPolicy(PublicAccessType.Blob);
     }
 
     public async Task UploadFileAsync(Guid id, Stream fileStream, CancellationToken cancellationToken = default)
     {
+        if (fileStream.CanSeek) fileStream.Position = 0;
         var a = await blobContainerClient.UploadBlobAsync(GetBlobName(id), fileStream, cancellationToken);
         if (!a.GetRawResponse().IsError)
             Console.WriteLine($"File uploaded successfully with ID: {id}");
@@ -50,7 +49,7 @@ public class AzureBlobStorage : IImageStorage
 
     public string GetImageUrl(Guid id)
     {
-        return blobContainerClient.Uri + GetBlobName(id);
+        return blobContainerClient.Uri + "/" + GetBlobName(id);
     }
 
     private static string GetBlobName(Guid id)

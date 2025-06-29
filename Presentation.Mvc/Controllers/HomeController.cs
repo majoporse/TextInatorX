@@ -10,7 +10,6 @@ public class HomeController(
     ILogger<HomeController> logger,
     IMessageBus bus) : Controller
 {
-
     public IActionResult Index()
     {
         return View();
@@ -20,17 +19,21 @@ public class HomeController(
     {
         return View();
     }
-    
+
     [HttpPost]
-    public ActionResult UploadImage(ImageUploadModel imageFile)
+    public async Task<ActionResult> UploadImage(ImageUploadModel? imageFile)
     {
-        if (imageFile != null && imageFile.ImageData.Length > 0)
+        if (!ModelState.IsValid)
         {
-            bus.SendAsync(new AddImageHandlerRequest("TODO change", new MemoryStream(imageFile.ImageData)));
+            logger.LogError("Model state is invalid.");
+            return BadRequest(ModelState);
         }
-        else
-        {
-        }
+
+        if (imageFile == null || imageFile.ImageData.Length == 0) return BadRequest();
+        using var stream = new MemoryStream();
+        await imageFile.ImageData.CopyToAsync(stream);
+
+        await bus.InvokeAsync(new AddImageHandlerRequest(stream, imageFile.ImageData.FileName));
         return View("Index");
     }
 
