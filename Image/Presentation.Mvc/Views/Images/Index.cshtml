@@ -1,4 +1,6 @@
-﻿@model ImagesViewModel
+﻿@using Presentation.Mvc.Controllers
+@using Presentation.Mvc.Utils
+@model ImagesViewModel
 
 @{
     ViewBag.Title = "title";
@@ -13,7 +15,7 @@
         <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
             <div class="card" style="width: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                 <div class="image-placeholder">
-                    <img src="@image.Url" class="pretty-image-card" alt="couldn't load"/>
+                    <img src="@image.Url" href="@Url.Action(nameof(ImagesController.Details), typeof(ImagesController).GetControllerName())" class="pretty-image-card" alt="couldn't load"/>
                 </div>
                 <div class="card-body" style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="card-text" style="text-overflow: ellipsis">

@@ -1,20 +1,51 @@
-﻿@using Presentation.Mvc.Controllers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Presentation.Mvc.Controllers
 @using Presentation.Mvc.Utils
 @model ImageUploadModel
 
-@{
-    ViewData["Title"] = "Home Page";
-}
-
 <div class="text-center">
-
     <h1 class="display-4">Welcome</h1>
-    @using (Html.BeginForm(nameof(HomeController.UploadImage), typeof(HomeController).GetControllerName(), FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+    @using (Html.BeginForm(nameof(HomeController.UploadImage), typeof(HomeController).GetControllerName(),
+                FormMethod.Post, new { enctype = "multipart/form-data", id = "imageUploadForm" }))
     {
         <div>
             <label for="file">Select an image to upload:</label>
             <input type="file" id="file" name="ImageData" asp-for="ImageData" accept="image/*" required/>
         </div>
-        <input type="submit" value="Upload Image" class="btn btn-primary mt-2"/>
+        <button type="submit" class="btn btn-primary mt-2">Upload Image</button>
     }
+
+    <div id="alertContainer">
+    </div>
 </div>
+
+
+<div id="uploadedContent" style="display: none;">
+    <div>
+        <div class="image-preview-container">
+            <img id="imagePreview" src="" alt="preview will appear here"/>
+            <div id="imageContainerFooter">
+                <p id="imageName"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="contentPreview">
+        <div id="spinnerContainer" class="d-flex h-100 w-100 align-items-center justify-content-center">
+            <div id="loadingSpinner" class="spinner-border" role="status">
+            </div>
+        </div>
+
+        <div id="content">
+            <p id="DetectedText"></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script>
+        $(document).ready();
+    </script>
+}

@@ -99,3 +99,72 @@ img {
     color: #6c757d; /* Bootstrap's secondary text color */
     font-style: italic; /* Optional: Make it italic for subtle emphasis */
 }
+
+/* Styles for the notification container */
+#alertContainer {
+    margin-top: 20px;
+}
+
+.image-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    max-width: 400px;
+}
+
+#imagePreview {
+    max-width: 100%;
+    height: auto;
+    width: 35rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#imageContainerFooter {
+    margin-top: 10px;
+    text-align: center;
+}
+
+#imageContainerFooter p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+#uploadedContent {
+    display: flex;
+    flex-direction: column; /* Default to column for mobile */
+    align-items: center; /* Center items horizontally */
+    justify-content: space-between;
+    padding: 20px;
+}
+
+@media (min-width: 768px) {
+    #uploadedContent {
+        flex-direction: row; /* Change to row for desktop */
+    }
+}
+
+#contentPreview {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* White background for better readability */
+    text-align: center; /* Center the text */
+    font-size: 16px; /* Adjust font size for readability */
+    color: #333; /* Dark text color for contrast */
+    width: 35rem;
+    height: 35rem;
+}
+
+#contentPreview p {
+    margin: 0;
+    font-size: 14px;
+    color: #555; /* Slightly lighter text color for secondary information */
+}

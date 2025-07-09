@@ -16,15 +16,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageStorage", "ImageStorag
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageProcessor", "ImageProcessor", "{3F3732D9-DFD7-45C5-A9EC-DE5A4051F34F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appliication", "ImageProcessor\Appliication\Appliication.csproj", "{972DA462-FD67-4AE7-A51A-E5A1ACC6B92D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessor.Application", "ImageProcessor\ImageProcessor.Application\ImageProcessor.Application.csproj", "{972DA462-FD67-4AE7-A51A-E5A1ACC6B92D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "ImageProcessor\Persistence\Persistence.csproj", "{5FB81C58-A1B5-4CED-AFFA-2CEA15859B5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessor.Persistence", "ImageProcessor\ImageProcessor.Persistence\ImageProcessor.Persistence.csproj", "{5FB81C58-A1B5-4CED-AFFA-2CEA15859B5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{E100A907-1A70-4A91-B9A0-E2B173767780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "ImageProcessor\Domain\Domain.csproj", "{7B1CCA7E-6C7B-4171-916F-0ABD26B6A3C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessor.Domain", "ImageProcessor\ImageProcessor.Domain\ImageProcessor.Domain.csproj", "{7B1CCA7E-6C7B-4171-916F-0ABD26B6A3C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "SharedKernel\SharedKernel.csproj", "{E2093375-90BA-470D-9BD5-305A99375E90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessor", "ImageProcessor\ImageProcessor\ImageProcessor.csproj", "{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,10 @@ Global
 		{E2093375-90BA-470D-9BD5-305A99375E90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2093375-90BA-470D-9BD5-305A99375E90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2093375-90BA-470D-9BD5-305A99375E90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8E10B09E-8B64-40A8-A6CD-74CD461E4150} = {ADA368BE-C3AA-40BF-BDAB-BAB56E90782F}
@@ -83,5 +89,6 @@ Global
 		{972DA462-FD67-4AE7-A51A-E5A1ACC6B92D} = {3F3732D9-DFD7-45C5-A9EC-DE5A4051F34F}
 		{5FB81C58-A1B5-4CED-AFFA-2CEA15859B5F} = {3F3732D9-DFD7-45C5-A9EC-DE5A4051F34F}
 		{7B1CCA7E-6C7B-4171-916F-0ABD26B6A3C7} = {3F3732D9-DFD7-45C5-A9EC-DE5A4051F34F}
+		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4} = {3F3732D9-DFD7-45C5-A9EC-DE5A4051F34F}
 	EndGlobalSection
 EndGlobal

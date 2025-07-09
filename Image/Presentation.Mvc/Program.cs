@@ -4,6 +4,7 @@ using Confluent.Kafka;
 using Contracts.Events;
 using JasperFx.Resources;
 using Persistence;
+using Presentation.Mvc.Hubs;
 using Wolverine;
 using Wolverine.Kafka;
 
@@ -60,6 +61,7 @@ builder.Host.UseWolverine(opts =>
     // based on the message type (or message attributes)
     // This will get fancier in the near future
     opts.PublishMessage<ImageUploadedEvent>().ToKafkaTopic(nameof(ImageUploadedEvent));
+    opts.ListenToKafkaTopic(nameof(ImageUploadedEventResult));
 
     // Listen to topics
     // opts.ListenToKafkaTopic("image-uploaded-event")
@@ -87,6 +89,7 @@ builder.Host.UseWolverine(opts =>
 builder.Services.BlobStorageInstall(builder.Configuration);
 builder.Services.PersistenceInstall(builder.Configuration);
 builder.Services.ApplicationInstall();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -109,5 +112,6 @@ app.MapControllerRoute(
         "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapHub<ImageUploadHub>("/imageUploadHub");
 
 await app.RunAsync();

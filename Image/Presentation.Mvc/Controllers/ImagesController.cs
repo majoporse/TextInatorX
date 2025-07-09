@@ -24,4 +24,26 @@ public class ImagesController(IMessageBus bus, ILogger<ImagesController> logger)
             Images = imagesOk.Images.ToList()
         });
     }
+
+    public async Task<IActionResult> Details(Guid id)
+    {
+        if (!ModelState.IsValid)
+        {
+            logger.LogError("Model state is invalid.");
+            return BadRequest(ModelState);
+        }
+        
+        var res = await bus.InvokeAsync<GetImagesHandlerRequest.Result>(new GetImagesHandlerRequest(id));
+        var image = res.Image;
+
+        var model = new ImageDetailModel
+        {
+            CreatedAt = image.CreatedAt,
+            Name = image.Name,
+            ImageUrl = image.Url,
+            Text = "image.Text"
+        };
+
+        return View(model);
+    }
 }

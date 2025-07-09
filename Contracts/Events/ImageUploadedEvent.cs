@@ -2,5 +2,6 @@
 
 public record ImageUploadedEvent(Guid ImageId, string ImageUrl)
 {
-    public record Result(Guid ImageId, string Text);
 }
+
+public record ImageUploadedEventResult(Guid ImageId, string Text);
