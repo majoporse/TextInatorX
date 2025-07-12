@@ -49,7 +49,7 @@ public class HomeController(
             var text = await bus.InvokeAsync<ImageUploadedEventResult>(new ImageUploadedEvent(Guid.NewGuid(),
                 image.ImageUrl), timeout: 30.Seconds());
 
-            await hubContext.Clients.Client(connectionId).SendAsync("ReceiveImageTextData", new
+            await hubContext.Clients.Client(connectionId).SendAsync(ImageUploadHub.RecieveImageDataEvent, new
             {
                 ImageId = image.Image.Id,
                 image.ImageUrl,

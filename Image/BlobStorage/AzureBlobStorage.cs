@@ -2,6 +2,8 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
+using MimeDetective;
+using MimeDetective.Definitions;
 
 namespace BlobStorage;
 
@@ -26,7 +28,26 @@ public class AzureBlobStorage : IImageStorage
     public async Task UploadFileAsync(Guid id, Stream fileStream, CancellationToken cancellationToken = default)
     {
         if (fileStream.CanSeek) fileStream.Position = 0;
-        var a = await blobContainerClient.UploadBlobAsync(GetBlobName(id), fileStream, cancellationToken);
+        var inspector = new ContentInspectorBuilder
+        {
+            Definitions = DefaultDefinitions.All()
+        }.Build();
+
+        var contentType = inspector.Inspect(fileStream).ByMimeType().FirstOrDefault()?.MimeType ?? "application/octet-stream";
+
+        var options = new BlobUploadOptions
+        {
+            HttpHeaders = new BlobHttpHeaders
+            {
+                ContentType = contentType
+            }
+        };
+        
+        var blobClient = blobContainerClient.GetBlobClient(GetBlobName(id));
+        
+        fileStream.Position = 0; // Ensure the stream is at the beginning before upload
+        var a = await blobClient.UploadAsync(fileStream, options, cancellationToken);
+        
         if (!a.GetRawResponse().IsError)
             Console.WriteLine($"File uploaded successfully with ID: {id}");
         else

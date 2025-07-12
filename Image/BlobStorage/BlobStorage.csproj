@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1"/>
+        <PackageReference Include="Mime-Detective" Version="25.4.25"/>
     </ItemGroup>
 
 </Project>

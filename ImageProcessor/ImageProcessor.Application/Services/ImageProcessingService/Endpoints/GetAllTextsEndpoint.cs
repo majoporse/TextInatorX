@@ -5,8 +5,9 @@ using Wolverine.Http;
 
 namespace ImageProcessor.Application.Services.ImageProcessingService.Endpoints;
 
-public class GetAllTextsEndpoint
+public static class GetAllTextsEndpoint
 {
+    [DevOnly]
     [WolverineGet("api/texts")]
     public static async Task<IResult> GetAllTexts(IMessageBus bus)
     {

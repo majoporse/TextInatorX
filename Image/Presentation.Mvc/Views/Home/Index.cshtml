@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Presentation.Mvc.Controllers
+@using Presentation.Mvc.Hubs
 @using Presentation.Mvc.Utils
 @model ImageUploadModel
 
@@ -44,8 +45,83 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js" integrity="sha512-7SRCYIJtR6F8ocwW7UxW6wGKqbSyqREDbfCORCbGLatU0iugBLwyOXpzhkPyHIFdBO0K2VCu57fvP2Twgx1o2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        $(document).ready();
+        function showAlert(message, type) {
+            const alertContainer = $("#alertContainer"); 
+            alertContainer.empty();
+
+            const alertClass = `alert-${type}`; // Bootstrap alert type (e.g., alert-success, alert-danger)
+            const alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+
+            alertContainer.append(alertHtml);
+        }
+        
+        $(document).ready(() => {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/imageUploadHub")
+                .build();
+
+
+            connection.on("@ImageUploadHub.RecieveImageDataEvent", (messageType) => {
+                showAlert("The text was successfully extracted from the image.", "success");
+                $('#spinnerContainer').hide();
+                $('#DetectedText').text(messageType.text);
+            });
+
+            let signalRConnectionId;
+            
+            connection.start().catch(function (err) {
+                return console.error(err.toString());
+            }).then(() => {
+                connection.invoke("@nameof(ImageUploadHub.GetConnectionId)")
+                    .then(connectionId => {
+                        console.log("SignalR Connection ID:", connectionId);
+                        signalRConnectionId = connectionId;
+                    })
+                    .catch(err => console.error("Error getting connection ID:", err));
+            });
+            
+            const onSuccess = (response) => {
+                showAlert("Image uploaded successfully!", "success");
+                $('#spinnerContainer').show()
+                $('#imagePreview').attr('src', response.imageUrl);
+                $('#imageName').text(response.imageName);
+                $('#uploadedContent').show();
+                $('#imageUploadForm').hide();
+            }
+
+            $('#imageUploadForm').submit(function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                $.ajax({
+                    url: this.action, // URL from Html.BeginForm
+                    type: this.method, // Method from Html.BeginForm (POST)
+                    data: formData,
+                    processData: false, // Important for FormData
+                    contentType: false, // Important for FormData
+                    headers: {
+                        "X-SignalR-Connection-Id": signalRConnectionId
+                    },
+                    beforeSend: function() {
+                        $('#uploadedContent').hide(); // Hide previous content
+                        $('#alertContainer').empty(); // Clear any existing alerts
+                    },
+                    success: function (response) {
+                        console.log("Upload successful:", response);
+                        onSuccess(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Upload error:", xhr.responseText);
+                    },
+                });
+            });
+        });
     </script>
 }
