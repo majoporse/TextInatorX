@@ -25,7 +25,7 @@ public class AzureBlobStorage : IImageStorage
         blobContainerClient.SetAccessPolicy(PublicAccessType.Blob);
     }
 
-    public async Task UploadFileAsync(Guid id, Stream fileStream, CancellationToken cancellationToken = default)
+    public async Task UploadFileAsync(string fileName, Stream fileStream, CancellationToken cancellationToken = default)
     {
         if (fileStream.CanSeek) fileStream.Position = 0;
         var inspector = new ContentInspectorBuilder
@@ -33,7 +33,8 @@ public class AzureBlobStorage : IImageStorage
             Definitions = DefaultDefinitions.All()
         }.Build();
 
-        var contentType = inspector.Inspect(fileStream).ByMimeType().FirstOrDefault()?.MimeType ?? "application/octet-stream";
+        var contentType = inspector.Inspect(fileStream).ByMimeType().FirstOrDefault()?.MimeType ??
+                          "application/octet-stream";
 
         var options = new BlobUploadOptions
         {
@@ -42,39 +43,34 @@ public class AzureBlobStorage : IImageStorage
                 ContentType = contentType
             }
         };
-        
-        var blobClient = blobContainerClient.GetBlobClient(GetBlobName(id));
-        
+
+        var blobClient = blobContainerClient.GetBlobClient(fileName);
+
         fileStream.Position = 0; // Ensure the stream is at the beginning before upload
         var a = await blobClient.UploadAsync(fileStream, options, cancellationToken);
-        
+
         if (!a.GetRawResponse().IsError)
-            Console.WriteLine($"File uploaded successfully with ID: {id}");
+            Console.WriteLine($"File uploaded successfully with ID: {fileName}");
         else
-            Console.WriteLine($"Failed to upload file with ID: {id}");
+            Console.WriteLine($"Failed to upload file with ID: {fileName}");
     }
 
-    public async Task<Stream> DownloadFileAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Stream> DownloadFileAsync(string fileName, CancellationToken cancellationToken = default)
     {
         var stream = new MemoryStream();
 
-        await blobContainerClient.GetBlobClient(GetBlobName(id)).DownloadToAsync(stream, cancellationToken);
+        await blobContainerClient.GetBlobClient(fileName).DownloadToAsync(stream, cancellationToken);
         return stream;
     }
 
-    public async Task<bool> DeleteFileAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteFileAsync(string fileName, CancellationToken cancellationToken = default)
     {
-        var blobClient = blobContainerClient.GetBlobClient(GetBlobName(id));
+        var blobClient = blobContainerClient.GetBlobClient(fileName);
         return (await blobClient.DeleteIfExistsAsync(cancellationToken: cancellationToken)).GetRawResponse().IsError;
     }
 
-    public string GetImageUrl(Guid id)
+    public string GetImageUrl(string fileName)
     {
-        return blobContainerClient.Uri + "/" + GetBlobName(id);
-    }
-
-    private static string GetBlobName(Guid id)
-    {
-        return $"images/{id}";
+        return blobContainerClient.Uri + "/" + fileName;
     }
 }

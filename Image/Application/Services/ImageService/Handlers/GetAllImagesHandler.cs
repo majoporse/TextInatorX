@@ -22,7 +22,7 @@ public class GetAllImagesHandler(IImageRepository imageRepository, IImageStorage
         {
             Id = e.Id,
             Name = e.Name,
-            Url = imageStorage.GetImageUrl(e.Id),
+            Url = imageStorage.GetImageUrl(e.FileName),
             CreatedAt = e.CreatedAt,
             UpdatedAt = e.UpdatedAt,
             DeletedAt = e.DeletedAt

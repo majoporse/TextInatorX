@@ -42,9 +42,12 @@ public class ImageRepository : IImageRepository
 
     public async Task<Image?> SaveImage(string name)
     {
+        var imageId = Guid.NewGuid();
         var image = new Image
         {
-            Name = name
+            Name = name,
+            Id = imageId,
+            FileName = imageId + Path.GetExtension(name)
         };
         try
         {

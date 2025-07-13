@@ -15,14 +15,17 @@
         <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
             <div class="card" style="width: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                 <div class="image-placeholder">
-                    <img src="@image.Url" href="@Url.Action(nameof(ImagesController.Details), typeof(ImagesController).GetControllerName())" class="pretty-image-card" alt="couldn't load"/>
+                    <a class="pretty-image-card" href="@Url.Action(nameof(ImagesController.Details), typeof(ImagesController).GetControllerName())">
+                        <img src="@image.Url" alt="couldn't load" class="image-card-image"/>
+                    </a>
                 </div>
-                <div class="card-body" style="display: flex; justify-content: space-between; align-items: center;">
-                    <div class="card-text" style="text-overflow: ellipsis">
+                <div class="image-card-body" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="image-card-text" style="text-overflow: ellipsis">
                         @image.Name
                     </div>
-                    <div class="card-text date-text">
-                        @image.CreatedAt.ToString("MMMM dd, yyyy") <span class="bi bi-calendar"></span>
+                    <div class="image-date-text">
+                        @image.CreatedAt.ToString("MMMM dd") <br/>
+                        @image.CreatedAt.ToString("yyyy") <span class="bi bi-calendar"></span>
                     </div>
                 </div>
             </div>

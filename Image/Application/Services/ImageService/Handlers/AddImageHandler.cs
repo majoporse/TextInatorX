@@ -19,9 +19,8 @@ public class AddImageHandler(IImageRepository imageRepository, IImageStorage ima
         // if (image is null)
         //     return Error.NotFound("Could not save image");
 
-        await imagesStorage.UploadFileAsync(image.Id, request.FileStream, cancellationToken);
-        var imageUrl = imagesStorage.GetImageUrl(image.Id);
+        await imagesStorage.UploadFileAsync(image.FileName, request.FileStream, cancellationToken);
 
-        return new AddImageHandlerRequest.Result(image, imageUrl);
+        return new AddImageHandlerRequest.Result(image, imagesStorage.GetImageUrl(image.FileName));
     }
 }

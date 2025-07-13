@@ -31,6 +31,10 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");

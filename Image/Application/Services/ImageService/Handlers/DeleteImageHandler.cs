@@ -5,7 +5,7 @@ using Wolverine.Attributes;
 
 namespace Application.Services.ImageService.Handlers;
 
-public record DeleteImageHandlerRequest(Guid ImageId)
+public record DeleteImageHandlerRequest(Guid imageId)
 {
     public record Result(Image Image);
 }
@@ -16,13 +16,13 @@ public class DeleteImageHandler(IImageRepository imageRepository, IImageStorage 
     public async Task<ErrorOr<DeleteImageHandlerRequest.Result>> HandleAsync(DeleteImageHandlerRequest request,
         CancellationToken cancellationToken)
     {
-        var ok = await imageStorage.DeleteFileAsync(request.ImageId, cancellationToken);
+        var image = await imageRepository.DeleteImageById(request.imageId);
+        if (image is null)
+            return Error.NotFound($"Image with ID {request.imageId} not found.");
+
+        var ok = await imageStorage.DeleteFileAsync(image.FileName, cancellationToken);
         if (!ok)
             return Error.Failure("Image deletion failed.");
-
-        var image = await imageRepository.DeleteImageById(request.ImageId);
-        if (image is null)
-            return Error.NotFound($"Image with ID {request.ImageId} not found.");
 
         return new DeleteImageHandlerRequest.Result(image);
     }

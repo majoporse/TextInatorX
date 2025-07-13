@@ -35,6 +35,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    width: 100%;
+    height: 100%;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -43,28 +45,18 @@ body {
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-.pretty-image-card img {
+.image-card-image {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
+    aspect-ratio: 1;
 }
 
-.pretty-image-card .card-body {
+.image-card-body {
     padding: 16px;
     background-color: #fff;
     text-align: center;
-}
-
-.pretty-image-card .card-body p {
-    margin: 0;
-    font-size: 14px;
-    color: #555;
-}
-
-.pretty-image-card .card-body p i {
-    display: block;
-    font-size: 12px;
-    color: #888;
+    height: 4rem;
 }
 
 .image-placeholder {
@@ -94,13 +86,20 @@ img {
     align-items: center;
 }
 
-.date-text {
+.image-date-text {
     font-size: 0.85em; /* Smaller font size */
     color: #6c757d; /* Bootstrap's secondary text color */
     font-style: italic; /* Optional: Make it italic for subtle emphasis */
+    width: 10rem;
+    text-align: right;
 }
 
-/* Styles for the notification container */
+.image-card-text {
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 #alertContainer {
     margin-top: 20px;
 }

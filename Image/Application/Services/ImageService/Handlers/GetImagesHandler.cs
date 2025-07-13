@@ -18,7 +18,7 @@ public class GetImagesHandler(IImageRepository imageRepository, IImageStorage im
     {
         var image = await imageRepository.GetImageById(request.ImageId);
         if (image is null) return Error.NotFound($"Image with ID {request.ImageId} not found.");
-        var url = imageStorage.GetImageUrl(image.Id);
+        var url = imageStorage.GetImageUrl(image.FileName);
 
         return new GetImagesHandlerRequest.Result(new ImageWithUrl
         {
