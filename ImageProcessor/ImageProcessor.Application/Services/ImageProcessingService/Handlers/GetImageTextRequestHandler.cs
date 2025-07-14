@@ -12,6 +12,10 @@ public class GetImageTextRequestHandler(IMessageBus bus, IImageTextRepository re
    {
       var imageText = await repository.GetByImageId(request.ImageId);
       
-      return new GetImageTextRequestResult(imageText.Value.Text);
+      var res = new GetImageTextRequestResult(imageText.Value.Text);
+      
+      await bus.SendAsync(res);
+
+      return res;
    } 
 }

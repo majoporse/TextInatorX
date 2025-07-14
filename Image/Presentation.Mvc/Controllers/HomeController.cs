@@ -46,7 +46,7 @@ public class HomeController(
 
         Task.Run(async () =>
         {
-            var text = await bus.InvokeAsync<ImageUploadedEventResult>(new ImageUploadedEvent(Guid.NewGuid(),
+            var text = await bus.InvokeAsync<ImageUploadedEventResult>(new ImageUploadedEvent( image.Image.Id,
                 image.ImageUrl), timeout: 30.Seconds());
 
             await hubContext.Clients.Client(connectionId).SendAsync(ImageUploadHub.RecieveImageDataEvent, new

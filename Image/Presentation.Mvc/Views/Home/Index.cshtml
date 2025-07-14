@@ -12,34 +12,33 @@
     {
         <div>
             <label for="file">Select an image to upload:</label>
-            <input type="file" id="file" name="ImageData" asp-for="ImageData" accept="image/*" required/>
+            <input type="file" class="file" name="ImageData" asp-for="ImageData" accept="image/*" required/>
         </div>
         <button type="submit" class="btn btn-primary mt-2">Upload Image</button>
     }
 
-    <div id="alertContainer">
+    <div class="alert-container">
     </div>
 </div>
 
-
-<div id="uploadedContent" style="display: none;">
+<div class="uploaded-content" style="display: none;">
     <div>
         <div class="image-preview-container">
-            <img id="imagePreview" src="" alt="preview will appear here"/>
-            <div id="imageContainerFooter">
-                <p id="imageName"></p>
+            <img class="image-preview" src="" alt="preview will appear here"/>
+            <div class="image-container-footer">
+                <p class="image-name"></p>
             </div>
         </div>
     </div>
-
-    <div id="contentPreview">
-        <div id="spinnerContainer" class="h-100 w-100 align-items-center justify-content-center" style="display: flex">
-            <div id="loadingSpinner" class="spinner-border" role="status">
+ 
+    <div class="content-preview">
+        <div id="spinner-container" class="h-100 w-100 align-items-center justify-content-center" style="display: flex">
+            <div id="loading-spinner" class="spinner-border" >
             </div>
         </div>
 
-        <div id="content">
-            <p id="DetectedText"></p>
+        <div class="detected-text">
+            <p class="detected-text-text"></p>
         </div>
     </div>
 </div>
@@ -48,7 +47,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js" integrity="sha512-7SRCYIJtR6F8ocwW7UxW6wGKqbSyqREDbfCORCbGLatU0iugBLwyOXpzhkPyHIFdBO0K2VCu57fvP2Twgx1o2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function showAlert(message, type) {
-            const alertContainer = $("#alertContainer"); 
+            const alertContainer = $(".alert-container"); 
             alertContainer.empty();
 
             const alertClass = `alert-${type}`; // Bootstrap alert type (e.g., alert-success, alert-danger)
@@ -69,8 +68,8 @@
 
             connection.on("@ImageUploadHub.RecieveImageDataEvent", (messageType) => {
                 showAlert("The text was successfully extracted from the image.", "success");
-                $('#spinnerContainer').hide();
-                $('#DetectedText').text(messageType.text);
+                $('#spinner-container').hide();
+                $('.detected-text-text').text(messageType.text);
             });
 
             let signalRConnectionId;
@@ -88,10 +87,10 @@
             
             const onSuccess = (response) => {
                 showAlert("Image uploaded successfully!", "success");
-                $('#spinnerContainer').show()
-                $('#imagePreview').attr('src', response.imageUrl);
-                $('#imageName').text(response.imageName);
-                $('#uploadedContent').show();
+                $('#spinner-container').show()
+                $('.image-preview').attr('src', response.imageUrl);
+                $('.image-name').text(response.imageName);
+                $('.uploaded-content').show();
                 $('#imageUploadForm').hide();
             }
 
@@ -110,8 +109,8 @@
                         "X-SignalR-Connection-Id": signalRConnectionId
                     },
                     beforeSend: function() {
-                        $('#uploadedContent').hide(); // Hide previous content
-                        $('#alertContainer').empty(); // Clear any existing alerts
+                        $('.uploaded-content').hide(); // Hide previous content
+                        $('.alert-container').empty(); // Clear any existing alerts
                     },
                     success: function (response) {
                         console.log("Upload successful:", response);

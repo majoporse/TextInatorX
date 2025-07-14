@@ -50,6 +50,9 @@ builder.Host.UseWolverine(opts =>
 
     opts.ListenToKafkaTopic(nameof(ImageUploadedEvent));
     opts.PublishMessage<ImageUploadedEventResult>().ToKafkaTopic(nameof(ImageUploadedEventResult));
+    
+    opts.ListenToKafkaTopic(nameof(GetImageTextRequest));
+    opts.PublishMessage<GetImageTextRequestResult>().ToKafkaTopic(nameof(GetImageTextRequestResult));
 
 
     // This will direct Wolverine to try to ensure that all

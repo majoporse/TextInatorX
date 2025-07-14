@@ -1,5 +1,7 @@
 ﻿using Application.Services.ImageService.Handlers;
+using Contracts.Events;
 using ErrorOr;
+using JasperFx.Core;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Mvc.Models;
 using Wolverine;
@@ -25,23 +27,25 @@ public class ImagesController(IMessageBus bus, ILogger<ImagesController> logger)
         });
     }
 
-    public async Task<IActionResult> Details(Guid id)
+    [HttpGet("Images/Detail/{id}")]
+    public async Task<IActionResult> Detail(Guid id)
     {
         if (!ModelState.IsValid)
         {
             logger.LogError("Model state is invalid.");
             return BadRequest(ModelState);
         }
-        
-        var res = await bus.InvokeAsync<GetImagesHandlerRequest.Result>(new GetImagesHandlerRequest(id));
+
+        var res = await bus.InvokeAsync<GetImageRequest.Result>(new GetImageRequest(id));
         var image = res.Image;
+        var textRes = await bus.InvokeAsync<GetImageTextRequestResult>(new GetImageTextRequest(id), timeout: 60.Seconds());
 
         var model = new ImageDetailModel
         {
             CreatedAt = image.CreatedAt,
             Name = image.Name,
             ImageUrl = image.Url,
-            Text = "image.Text"
+            Text = textRes.Text
         };
 
         return View(model);

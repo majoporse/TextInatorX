@@ -62,6 +62,9 @@ builder.Host.UseWolverine(opts =>
     // This will get fancier in the near future
     opts.PublishMessage<ImageUploadedEvent>().ToKafkaTopic(nameof(ImageUploadedEvent));
     opts.ListenToKafkaTopic(nameof(ImageUploadedEventResult));
+    
+    opts.ListenToKafkaTopic(nameof(GetImageTextRequestResult));
+    opts.PublishMessage<GetImageTextRequest>().ToKafkaTopic(nameof(GetImageTextRequest));
 
     // Listen to topics
     // opts.ListenToKafkaTopic("image-uploaded-event")

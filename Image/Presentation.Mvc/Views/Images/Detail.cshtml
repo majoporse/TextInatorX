@@ -1,19 +1,18 @@
 ﻿@model ImageDetailModel
 
-
-<div id="uploadedContent">
+<div class="uploaded-content" >
     <div>
         <div class="image-preview-container">
-            <img id="imagePreview" src="@Model.ImageUrl" alt="Failed to load"/>
-            <div id="imageContainerFooter">
-                <p id="imageName">@Model.Name</p>
+            <img class="image-preview" src="@Model.ImageUrl" alt="preview will appear here"/>
+            <div class="image-container-footer">
+                <p class="image-name">@Model.Name</p>
             </div>
         </div>
     </div>
 
-    <div id="contentPreview">
-        <div id="content">
-            <p id="DetectedText">@Model.Text</p>
+    <div class="content-preview">
+        <div class="detected-text">
+            <p class="detected-text-text">@Model.Text</p>
         </div>
     </div>
 </div>
