@@ -1,12 +1,34 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using SharedKernel.Types;
 using Wolverine.Attributes;
 
 namespace Application.Services.ImageService.Handlers;
 
 public record AddImageHandlerRequest(Stream FileStream, string name)
 {
-    public record Result(Image Image, string ImageUrl);
+    public record Response(Image Image, string ImageUrl);
+
+    public record Result : Res<Response>
+    {
+        public static implicit operator Result(Response response)
+        {
+            return new Result
+            {
+                IsSuccess = true,
+                Value = response
+            };
+        }
+
+        public static implicit operator Result(Err error)
+        {
+            return new Result
+            {
+                IsSuccess = false,
+                ErrorMessage = "An error occurred while adding the image."
+            };
+        }
+    }
 }
 
 [WolverineHandler]
@@ -16,11 +38,9 @@ public class AddImageHandler(IImageRepository imageRepository, IImageStorage ima
         CancellationToken cancellationToken = default)
     {
         var image = await imageRepository.SaveImage(request.name);
-        // if (image is null)
-        //     return Error.NotFound("Could not save image");
 
-        await imagesStorage.UploadFileAsync(image.FileName, request.FileStream, cancellationToken);
+        await imagesStorage.UploadFileAsync(image.Value.FileName, request.FileStream, cancellationToken);
 
-        return new AddImageHandlerRequest.Result(image, imagesStorage.GetImageUrl(image.FileName));
+        return new AddImageHandlerRequest.Response(image.Value, imagesStorage.GetImageUrl(image.Value.FileName));
     }
 }

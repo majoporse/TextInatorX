@@ -28,6 +28,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "SharedKerne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessor", "ImageProcessor\ImageProcessor\ImageProcessor.csproj", "{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextInatorX.AppHost", "TextInatorX.AppHost\TextInatorX.AppHost.csproj", "{233A4155-2759-4571-BD08-0B25585F229D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextInatorX.ServiceDefaults", "TextInatorX.ServiceDefaults\TextInatorX.ServiceDefaults.csproj", "{F87A724C-2759-4DF1-8EC3-190FABFD9124}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +82,14 @@ Global
 		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F1B7710-5151-41F7-B0BB-5F4C834FE2B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{233A4155-2759-4571-BD08-0B25585F229D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{233A4155-2759-4571-BD08-0B25585F229D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{233A4155-2759-4571-BD08-0B25585F229D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{233A4155-2759-4571-BD08-0B25585F229D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F87A724C-2759-4DF1-8EC3-190FABFD9124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F87A724C-2759-4DF1-8EC3-190FABFD9124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F87A724C-2759-4DF1-8EC3-190FABFD9124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F87A724C-2759-4DF1-8EC3-190FABFD9124}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8E10B09E-8B64-40A8-A6CD-74CD461E4150} = {ADA368BE-C3AA-40BF-BDAB-BAB56E90782F}

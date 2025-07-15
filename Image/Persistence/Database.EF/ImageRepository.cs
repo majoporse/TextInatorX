@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using EntityFramework.Exceptions.Common;
+using ErrorOr;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Database.EF;
@@ -13,34 +15,59 @@ public class ImageRepository : IImageRepository
         repository = new Repository<Image>(context);
     }
 
-    public async Task<Image?> GetImageById(Guid id)
+    public async Task<ErrorOr<Image>> GetImageById(Guid id)
     {
-        return (await repository.Get(image => image.Id == id).ToListAsync()).FirstOrDefault();
+        try
+        {
+            var image = (await repository.Get(image => image.Id == id).ToListAsync()).FirstOrDefault();
+            if (image == null) return Error.NotFound($"Image with ID {id} not found.");
+            return image;
+        }
+        catch (ReferenceConstraintException e)
+        {
+            return Error.NotFound(e.Message);
+        }
     }
 
-    public async Task<Image?> UpdateImage(Image image)
+    public async Task<ErrorOr<Image>> UpdateImage(Image image)
     {
-        repository.Update(image);
-        await repository.SaveChangesAsync();
+        try
+        {
+            repository.Update(image);
+            await repository.SaveChangesAsync();
+        }
+        catch (ReferenceConstraintException e)
+        {
+            return Error.NotFound(e.Message);
+        }
+
         return image;
     }
 
-    public async Task<Image?> DeleteImageById(Guid id)
+    public async Task<ErrorOr<Image>> DeleteImageById(Guid id)
     {
-        var image = await GetImageById(id);
-        if (image == null)
-            return null;
-        repository.Delete(id);
-        await repository.SaveChangesAsync();
-        return image;
+        try
+        {
+            var image = await repository.GetByIDAsync(id);
+            if (image == null) return Error.NotFound($"Image with ID {id} not found.");
+
+            repository.Delete(id);
+            await repository.SaveChangesAsync();
+
+            return image;
+        }
+        catch (ReferenceConstraintException e)
+        {
+            return Error.NotFound(e.Message);
+        }
     }
 
-    public async Task<IEnumerable<Image>> GetAllImagesAsync()
+    public async Task<ErrorOr<IEnumerable<Image>>> GetAllImagesAsync()
     {
         return await repository.Get().ToListAsync();
     }
 
-    public async Task<Image?> SaveImage(string name)
+    public async Task<ErrorOr<Image>> SaveImage(string name)
     {
         var imageId = Guid.NewGuid();
         var image = new Image
@@ -49,14 +76,19 @@ public class ImageRepository : IImageRepository
             Id = imageId,
             FileName = imageId + Path.GetExtension(name)
         };
+
         try
         {
             await repository.Insert(image);
             await repository.SaveChangesAsync();
         }
-        catch (Exception ex)
+        catch (UniqueConstraintException e)
         {
-            return null;
+            return Error.Conflict(e.Message);
+        }
+        catch (ReferenceConstraintException ex)
+        {
+            return Error.NotFound(ex.Message);
         }
 
         return image;

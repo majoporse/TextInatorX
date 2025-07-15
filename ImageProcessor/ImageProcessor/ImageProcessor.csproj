@@ -19,6 +19,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Contracts\Contracts.csproj"/>
+        <ProjectReference Include="..\..\TextInatorX.ServiceDefaults\TextInatorX.ServiceDefaults.csproj" />
         <ProjectReference Include="..\ImageProcessor.Persistence\ImageProcessor.Persistence.csproj"/>
     </ItemGroup>
 

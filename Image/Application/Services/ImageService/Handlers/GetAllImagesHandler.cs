@@ -1,24 +1,46 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
-using ErrorOr;
 using ImTools;
+using SharedKernel.Types;
 using Wolverine.Attributes;
 
 namespace Application.Services.ImageService.Handlers;
 
 public record GetAllImagesHandlerRequest
 {
-    public record Result(IEnumerable<ImageWithUrl> Images);
+    public record Response(IEnumerable<ImageWithUrl> Images);
+
+    public record Result : Res<Response>
+    {
+        public static implicit operator Result(Response response)
+        {
+            return new Result
+            {
+                IsSuccess = true,
+                Value = response
+            };
+        }
+
+        public static implicit operator Result(Err error)
+        {
+            return new Result
+            {
+                IsSuccess = false,
+                ErrorMessage = "An error occurred while retrieving images."
+            };
+        }
+    }
 }
 
 [WolverineHandler]
 public class GetAllImagesHandler(IImageRepository imageRepository, IImageStorage imageStorage)
 {
-    public async Task<ErrorOr<GetAllImagesHandlerRequest.Result>> HandleAsync(GetAllImagesHandlerRequest request,
+    public async Task<GetAllImagesHandlerRequest.Result> HandleAsync(GetAllImagesHandlerRequest request,
         CancellationToken cancellationToken = default)
     {
         var image = await imageRepository.GetAllImagesAsync();
-        var imageList = image.Map(e => new ImageWithUrl
+
+        var imageList = image.Value.Map(e => new ImageWithUrl
         {
             Id = e.Id,
             Name = e.Name,
@@ -28,6 +50,6 @@ public class GetAllImagesHandler(IImageRepository imageRepository, IImageStorage
             DeletedAt = e.DeletedAt
         });
 
-        return new GetAllImagesHandlerRequest.Result(imageList);
+        return new GetAllImagesHandlerRequest.Response(imageList);
     }
 }

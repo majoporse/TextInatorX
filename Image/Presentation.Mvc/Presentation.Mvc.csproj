@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\TextInatorX.ServiceDefaults\TextInatorX.ServiceDefaults.csproj" />
         <ProjectReference Include="..\Application\Application.csproj"/>
         <ProjectReference Include="..\BlobStorage\BlobStorage.csproj"/>
         <ProjectReference Include="..\..\Contracts\Contracts.csproj"/>

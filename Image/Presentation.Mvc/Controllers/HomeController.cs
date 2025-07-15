@@ -41,12 +41,16 @@ public class HomeController(
         using var stream = new MemoryStream();
         await imageFile.ImageData.CopyToAsync(stream);
 
-        var image = await bus.InvokeAsync<AddImageHandlerRequest.Result>(
+        var res = await bus.InvokeAsync<AddImageHandlerRequest.Result>(
             new AddImageHandlerRequest(stream, imageFile.ImageData.FileName));
+
+        if (!res.IsSuccess) return BadRequest(res.ErrorMessage);
+
+        var image = res.Value;
 
         Task.Run(async () =>
         {
-            var text = await bus.InvokeAsync<ImageUploadedEventResult>(new ImageUploadedEvent( image.Image.Id,
+            var text = await bus.InvokeAsync<ImageUploadedEventResult>(new ImageUploadedEvent(image.Image.Id,
                 image.ImageUrl), timeout: 30.Seconds());
 
             await hubContext.Clients.Client(connectionId).SendAsync(ImageUploadHub.RecieveImageDataEvent, new
@@ -54,7 +58,7 @@ public class HomeController(
                 ImageId = image.Image.Id,
                 image.ImageUrl,
                 ImageName = image.Image.Name,
-                text.Text
+                text = text.Value.Text
             });
         });
 

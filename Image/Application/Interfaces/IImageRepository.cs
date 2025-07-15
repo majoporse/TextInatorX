@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using ErrorOr;
 
 namespace Application.Interfaces;
 
 public interface IImageRepository
 {
-    public Task<IEnumerable<Image>> GetAllImagesAsync();
-    public Task<Image?> GetImageById(Guid id);
-    public Task<Image?> SaveImage(string name);
-    public Task<Image?> UpdateImage(Image image);
-    public Task<Image?> DeleteImageById(Guid id);
+    public Task<ErrorOr<IEnumerable<Image>>> GetAllImagesAsync();
+    public Task<ErrorOr<Image>> GetImageById(Guid id);
+    public Task<ErrorOr<Image>> SaveImage(string name);
+    public Task<ErrorOr<Image>> UpdateImage(Image image);
+    public Task<ErrorOr<Image>> DeleteImageById(Guid id);
 }

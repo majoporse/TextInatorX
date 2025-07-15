@@ -32,9 +32,9 @@ public class Repository<TEntity> where TEntity : class
         return query;
     }
 
-    public virtual ValueTask<TEntity?> GetByIDAsync(object id)
+    public virtual ValueTask<TEntity?> GetByIDAsync(object id, CancellationToken cancellationToken = default)
     {
-        return dbSet.FindAsync(id);
+        return dbSet.FindAsync(id, cancellationToken);
     }
 
     public virtual async Task Insert(TEntity entity)

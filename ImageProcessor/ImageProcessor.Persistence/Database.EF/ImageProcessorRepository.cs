@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using EntityFramework.Exceptions.Common;
 using ErrorOr;
 using ImageProcessor.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -11,25 +12,37 @@ public class ImageProcessorRepository(ImageProcessorDbContext context) : IImageT
 
     public async Task<ErrorOr<ImageText>> Create(ImageText imageText, CancellationToken cancellationToken = default)
     {
-        await repository.Insert(imageText);
-        await repository.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await repository.Insert(imageText);
+            await repository.SaveChangesAsync(cancellationToken);
+        }
+        catch (UniqueConstraintException e)
+        {
+            return Error.Conflict(e.Message);
+        }
+
         return imageText;
     }
 
     public async Task<ErrorOr<ImageText>> Delete(ImageText imageText, CancellationToken cancellationToken = default)
     {
-        var text = await repository.GetByIDAsync(imageText.Id);
-        if (text == null)
-            return Error.NotFound("ImageText not found");
+        try
+        {
+            repository.Delete(imageText);
+            await repository.SaveChangesAsync(cancellationToken);
+        }
+        catch (ReferenceConstraintException e)
+        {
+            return Error.Conflict(e.Message);
+        }
 
-        repository.Delete(imageText);
-        await repository.SaveChangesAsync(cancellationToken);
         return imageText;
     }
 
     public async Task<ErrorOr<ImageText>> GetById(Guid id, CancellationToken cancellationToken = default)
     {
-        var imageText = await repository.GetByIDAsync(id);
+        var imageText = await repository.GetByIDAsync(id, cancellationToken);
         if (imageText == null)
             return Error.NotFound("ImageText not found");
         return imageText;
@@ -52,8 +65,16 @@ public class ImageProcessorRepository(ImageProcessorDbContext context) : IImageT
 
     public async Task<ErrorOr<ImageText>> Update(ImageText imageText, CancellationToken cancellationToken = default)
     {
-        repository.Update(imageText);
-        await repository.SaveChangesAsync(cancellationToken);
+        try
+        {
+            repository.Update(imageText);
+            await repository.SaveChangesAsync(cancellationToken);
+        }
+        catch (ReferenceConstraintException e)
+        {
+            return Error.Conflict(e.Message);
+        }
+
         return imageText;
     }
 }

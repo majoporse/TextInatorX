@@ -1,6 +1,5 @@
 ﻿using Application.Services.ImageService.Handlers;
 using Contracts.Events;
-using ErrorOr;
 using JasperFx.Core;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Mvc.Models;
@@ -13,12 +12,8 @@ public class ImagesController(IMessageBus bus, ILogger<ImagesController> logger)
     public async Task<IActionResult> Index()
     {
         var images =
-            await bus.InvokeAsync<ErrorOr<GetAllImagesHandlerRequest.Result>>(new GetAllImagesHandlerRequest());
-        if (images.IsError)
-        {
-            logger.LogError("Failed to retrieve images: {Errors}", images.Errors);
-            return View("Error", new ErrorViewModel { RequestId = "Failed to load images" });
-        }
+            await bus.InvokeAsync<GetAllImagesHandlerRequest.Result>(new GetAllImagesHandlerRequest());
+        if (!images.IsSuccess) return View("Error", new ErrorViewModel { RequestId = "Failed to load images" });
 
         var imagesOk = images.Value;
         return View(new ImagesViewModel
@@ -37,15 +32,30 @@ public class ImagesController(IMessageBus bus, ILogger<ImagesController> logger)
         }
 
         var res = await bus.InvokeAsync<GetImageRequest.Result>(new GetImageRequest(id));
-        var image = res.Image;
-        var textRes = await bus.InvokeAsync<GetImageTextRequestResult>(new GetImageTextRequest(id), timeout: 60.Seconds());
+        if (!res.IsSuccess)
+        {
+            logger.LogError("Failed to get image.");
+            return View("Error", new ErrorViewModel { RequestId = "Failed to get image" });
+        }
+        
+        var image = res.Value.Image;
+
+        var textRes =
+            await bus.InvokeAsync<GetImageTextRequestResult>(new GetImageTextRequest(id), timeout: 60.Seconds());
+        if (!textRes.IsSuccess)
+        {
+            logger.LogError("Failed to retrieve image text: {ErrorMessage}", textRes.ErrorMessage);
+            return View("Error", new ErrorViewModel { RequestId = "Failed to retrieve image text" });
+        }
+
+        var text = textRes.Value;
 
         var model = new ImageDetailModel
         {
             CreatedAt = image.CreatedAt,
             Name = image.Name,
             ImageUrl = image.Url,
-            Text = textRes.Text
+            Text = text.Text
         };
 
         return View(model);
