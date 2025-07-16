@@ -1,40 +1,15 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
+using Contracts.Events;
 using SharedKernel.Types;
+using Wolverine;
 using Wolverine.Attributes;
 
 namespace Application.Services.ImageService.Handlers;
 
-public record DeleteImageHandlerRequest(Guid imageId)
-{
-    public record Response(Image Image);
-
-    public record Result : Res<Response>
-    {
-        public static implicit operator Result(Response response)
-        {
-            return new Result
-            {
-                IsSuccess = true,
-                Value = response
-            };
-        }
-
-        public static implicit operator Result(Err error)
-        {
-            return new Result
-            {
-                IsSuccess = false,
-                ErrorMessage = error.ErrorMessage
-            };
-        }
-    }
-}
-
 [WolverineHandler]
-public class DeleteImageHandler(IImageRepository imageRepository, IImageStorage imageStorage)
+public class DeleteImageHandler(IMessageBus bus, IImageRepository imageRepository, IImageStorage imageStorage)
 {
-    public async Task<DeleteImageHandlerRequest.Result> HandleAsync(DeleteImageHandlerRequest request,
+    public async Task<DeleteImageRequestResult> HandleAsync(DeleteImageRequest request,
         CancellationToken cancellationToken)
     {
         var image = await imageRepository.DeleteImageById(request.imageId);
@@ -45,6 +20,10 @@ public class DeleteImageHandler(IImageRepository imageRepository, IImageStorage 
         if (!ok)
             return Err.Failure("Image deletion failed.");
 
-        return new DeleteImageHandlerRequest.Response(image.Value);
+        DeleteImageRequestResult res = new DeleteImageRequest.Response(image.Value.MapToImageDto());
+
+        await bus.SendAsync(res);
+
+        return res;
     }
 }

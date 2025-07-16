@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Application.Services.ImageService.Handlers;
 using Contracts.Events;
 using JasperFx.Core;
 using Microsoft.AspNetCore.Mvc;
@@ -38,31 +37,37 @@ public class HomeController(
 
         if (imageFile == null || imageFile.ImageData.Length == 0) return BadRequest();
 
-        using var stream = new MemoryStream();
-        await imageFile.ImageData.CopyToAsync(stream);
 
-        var res = await bus.InvokeAsync<AddImageHandlerRequest.Result>(
-            new AddImageHandlerRequest(stream, imageFile.ImageData.FileName));
+        var res = await bus.InvokeAsync<AddImageRequestResult>(
+            new AddImageRequest(await imageFile.ImageData.OpenReadStream().ReadAllBytesAsync(), imageFile.ImageData.FileName), timeout:30.Seconds());
 
         if (!res.IsSuccess) return BadRequest(res.ErrorMessage);
 
-        var image = res.Value;
+        var image = res.Value!;
 
         Task.Run(async () =>
         {
-            var text = await bus.InvokeAsync<ImageUploadedEventResult>(new ImageUploadedEvent(image.Image.Id,
+            var text = await bus.InvokeAsync<ImageUploadedEventResult>(new ImageUploadedEvent(image.ImageDto.Id,
                 image.ImageUrl), timeout: 30.Seconds());
+
+            if (!text.IsSuccess)
+            {
+                logger.LogError(text.ErrorMessage);
+                return;
+            }
+
+            var textValue = text.Value!;
 
             await hubContext.Clients.Client(connectionId).SendAsync(ImageUploadHub.RecieveImageDataEvent, new
             {
-                ImageId = image.Image.Id,
+                ImageId = image.ImageDto.Id,
                 image.ImageUrl,
-                ImageName = image.Image.Name,
-                text = text.Value.Text
+                ImageName = image.ImageDto.Name,
+                text = textValue.Text
             });
         });
 
-        return Ok(new { image.ImageUrl, ImageName = image.Image.Name });
+        return Ok(new { image.ImageUrl, ImageName = image.ImageDto.Name });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,56 +1,28 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
+using Contracts.Events;
 using SharedKernel.Types;
+using Wolverine;
 using Wolverine.Attributes;
 
 namespace Application.Services.ImageService.Handlers;
 
-public record GetImageRequest(Guid ImageId)
-{
-    public record Response(ImageWithUrl Image);
-
-    public record Result : Res<Response>
-    {
-        public static implicit operator Result(Response response)
-        {
-            return new Result
-            {
-                IsSuccess = true,
-                Value = response
-            };
-        }
-
-        public static implicit operator Result(Err error)
-        {
-            return new Result
-            {
-                IsSuccess = false,
-                ErrorMessage = error.ErrorMessage
-            };
-        }
-    }
-}
-
 [WolverineHandler]
-public class GetImagesHandler(IImageRepository imageRepository, IImageStorage imageStorage)
+public class GetImagesHandler(IMessageBus bus, IImageRepository imageRepository, IImageStorage imageStorage)
 {
-    public async Task<GetImageRequest.Result> HandleAsync(GetImageRequest request,
+    public async Task<GetImageRequestResult> HandleAsync(GetImageRequest request,
         CancellationToken cancellationToken = default)
     {
-        var res = await imageRepository.GetImageById(request.ImageId);
+        var imageRes = await imageRepository.GetImageById(request.ImageId);
 
-        if (res.IsError) return Err.NotFound($"Image with ID {request.ImageId} not found.");
+        if (imageRes.IsError) return Err.NotFound($"Image with ID {request.ImageId} not found.");
 
-        var image = res.Value;
+        var image = imageRes.Value;
         var url = imageStorage.GetImageUrl(image.FileName);
 
-        return new GetImageRequest.Response(new ImageWithUrl
-        {
-            Id = image.Id,
-            Url = url,
-            CreatedAt = image.CreatedAt,
-            UpdatedAt = image.UpdatedAt,
-            DeletedAt = image.DeletedAt
-        });
+        GetImageRequestResult res = new GetImageRequest.Response(image.MapToImageDtoWithUrl(url));
+
+        await bus.SendAsync(res);
+
+        return res;
     }
 }

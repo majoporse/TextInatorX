@@ -1,8 +1,8 @@
-﻿using Domain.Entities;
+﻿using SharedKernel.Types;
 
 namespace Presentation.Mvc.Models;
 
 public class ImagesViewModel
 {
-    public List<ImageWithUrl> Images { get; set; }
+    public List<ImageWithUrlDto> Images { get; set; }
 }

@@ -16,7 +16,7 @@
             <div class="card" style="width: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                 <div class="image-placeholder">
                     <a class="pretty-image-card" href="@Url.Action(nameof(ImagesController.Detail), typeof(ImagesController).GetControllerName(), new { id = image.Id })">
-                        <img src="@image.Url" alt="couldn't load" class="image-card-image"/>
+                        <img src="@image.ImageUrl" alt="couldn't load" class="image-card-image"/>
                     </a>
                 </div>
                 <div class="image-card-body" style="display: flex; justify-content: space-between; align-items: center;">

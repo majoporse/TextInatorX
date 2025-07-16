@@ -1,11 +1,14 @@
+using Application;
+using BlobStorage;
 using Confluent.Kafka;
 using Confluent.Kafka.Extensions.OpenTelemetry;
 using Contracts.Events;
 using ImTools;
+using JasperFx.Core;
 using JasperFx.Resources;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Presentation.Mvc.Hubs;
+using Persistence;
 using TextInatorX.ServiceDefaults;
 using Wolverine;
 using Wolverine.Kafka;
@@ -24,7 +27,8 @@ builder.Services.AddOpenTelemetry()
         .AddSource("Wolverine")
         .AddAspNetCoreInstrumentation()
         .AddConfluentKafkaInstrumentation()
-        .AddHttpClientInstrumentation());
+        .AddHttpClientInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation());
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -37,7 +41,7 @@ builder.Host.UseWolverine(opts =>
         {
             // configure both producers and consumers
             client.BootstrapServers = "localhost:9094";
-            client.ClientId = "frontend-service";
+            client.ClientId = "image-storage-service";
             client.Acks = Acks.None;
             client.MessageMaxBytes = 10000000; // 10 MB
             client.AllowAutoCreateTopics = true;
@@ -45,14 +49,14 @@ builder.Host.UseWolverine(opts =>
         .ConfigureConsumers(consumer =>
         {
             // configure only consumers
-            consumer.GroupId = "frontend-service-group";
-            consumer.AutoOffsetReset = AutoOffsetReset.Earliest;
+            consumer.GroupId = "image-storage-service-group";
+            // consumer.AutoOffsetReset = AutoOffsetReset.Earliest;
         })
         .ConfigureProducers(producer =>
         {
             // configure only producers
             // producer.EnableIdempotence = true;
-            producer.MessageTimeoutMs = 0;
+            producer.MessageTimeoutMs = 10000;
         })
 
         // .ConfigureProducerBuilders(builder =>
@@ -77,21 +81,17 @@ builder.Host.UseWolverine(opts =>
     // based on the message type (or message attributes)
     // This will get fancier in the near future
 
-    opts.PublishMessage<AddImageRequest>().ToKafkaTopic(nameof(AddImageRequest));
-    opts.PublishMessage<DeleteImageRequest>().ToKafkaTopic(nameof(DeleteImageRequest));
-    opts.PublishMessage<GetAllImagesRequest>().ToKafkaTopic(nameof(GetAllImagesRequest));
-    opts.PublishMessage<GetImageRequest>().ToKafkaTopic(nameof(GetImageRequest));
-    opts.PublishMessage<GetImageTextRequest>().ToKafkaTopic(nameof(GetImageTextRequest));
-    opts.PublishMessage<ImageUploadedEvent>().ToKafkaTopic(nameof(ImageUploadedEvent));
+    opts.PublishMessage<AddImageRequestResult>().ToKafkaTopic(nameof(AddImageRequestResult));
+    opts.PublishMessage<DeleteImageRequestResult>().ToKafkaTopic(nameof(DeleteImageRequestResult));
+    opts.PublishMessage<GetImageRequestResult>().ToKafkaTopic(nameof(GetImageRequestResult));
+    opts.PublishMessage<GetAllImagesRequestResult>().ToKafkaTopic(nameof(GetAllImagesRequestResult));
 
     string[] topics =
     [
-        nameof(AddImageRequestResult),
-        nameof(DeleteImageRequestResult),
-        nameof(GetAllImagesRequestResult),
-        nameof(GetImageRequestResult),
-        nameof(GetImageTextRequestResult),
-        nameof(ImageUploadedEventResult)
+        nameof(AddImageRequest),
+        nameof(DeleteImageRequest),
+        nameof(GetAllImagesRequest),
+        nameof(GetImageRequest)
     ];
 
     topics.ForEach(e => opts.ListenToKafkaTopic(e));
@@ -120,7 +120,9 @@ builder.Host.UseWolverine(opts =>
     opts.Services.AddResourceSetupOnStartup();
 });
 
-builder.Services.AddSignalR();
+builder.Services.BlobStorageInstall(builder.Configuration);
+builder.Services.PersistenceInstall(builder.Configuration);
+builder.Services.ApplicationInstall();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -137,12 +139,5 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
-
-app.MapControllerRoute(
-        "default",
-        "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-app.MapHub<ImageUploadHub>("/imageUploadHub");
 
 await app.RunAsync();

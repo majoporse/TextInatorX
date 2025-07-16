@@ -1,55 +1,32 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
+using Contracts.Events;
 using ImTools;
 using SharedKernel.Types;
+using Wolverine;
 using Wolverine.Attributes;
 
 namespace Application.Services.ImageService.Handlers;
 
-public record GetAllImagesHandlerRequest
-{
-    public record Response(IEnumerable<ImageWithUrl> Images);
-
-    public record Result : Res<Response>
-    {
-        public static implicit operator Result(Response response)
-        {
-            return new Result
-            {
-                IsSuccess = true,
-                Value = response
-            };
-        }
-
-        public static implicit operator Result(Err error)
-        {
-            return new Result
-            {
-                IsSuccess = false,
-                ErrorMessage = error.ErrorMessage 
-            };
-        }
-    }
-}
-
 [WolverineHandler]
-public class GetAllImagesHandler(IImageRepository imageRepository, IImageStorage imageStorage)
+public class GetAllImagesHandler(IMessageBus bus, IImageRepository imageRepository, IImageStorage imageStorage)
 {
-    public async Task<GetAllImagesHandlerRequest.Result> HandleAsync(GetAllImagesHandlerRequest request,
+    public async Task<GetAllImagesRequestResult> HandleAsync(GetAllImagesRequest request,
         CancellationToken cancellationToken = default)
     {
         var image = await imageRepository.GetAllImagesAsync();
 
-        var imageList = image.Value.Map(e => new ImageWithUrl
+        var imageList = image.Value.Map(e => new ImageWithUrlDto
         {
             Id = e.Id,
             Name = e.Name,
-            Url = imageStorage.GetImageUrl(e.FileName),
-            CreatedAt = e.CreatedAt,
-            UpdatedAt = e.UpdatedAt,
-            DeletedAt = e.DeletedAt
+            ImageUrl = imageStorage.GetImageUrl(e.FileName),
+            CreatedAt = e.CreatedAt
         });
 
-        return new GetAllImagesHandlerRequest.Response(imageList);
+        GetAllImagesRequestResult res = new GetAllImagesRequest.Response(imageList);
+
+        await bus.SendAsync(res);
+
+        return res;
     }
 }

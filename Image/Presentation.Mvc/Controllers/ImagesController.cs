@@ -1,5 +1,4 @@
-﻿using Application.Services.ImageService.Handlers;
-using Contracts.Events;
+﻿using Contracts.Events;
 using JasperFx.Core;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Mvc.Models;
@@ -12,10 +11,11 @@ public class ImagesController(IMessageBus bus, ILogger<ImagesController> logger)
     public async Task<IActionResult> Index()
     {
         var images =
-            await bus.InvokeAsync<GetAllImagesHandlerRequest.Result>(new GetAllImagesHandlerRequest());
+            await bus.InvokeAsync<GetAllImagesRequestResult>(new GetAllImagesRequest(), timeout: 30.Seconds());
         if (!images.IsSuccess) return View("Error", new ErrorViewModel { RequestId = "Failed to load images" });
 
-        var imagesOk = images.Value;
+        var imagesOk = images.Value!;
+
         return View(new ImagesViewModel
         {
             Images = imagesOk.Images.ToList()
@@ -31,14 +31,14 @@ public class ImagesController(IMessageBus bus, ILogger<ImagesController> logger)
             return BadRequest(ModelState);
         }
 
-        var res = await bus.InvokeAsync<GetImageRequest.Result>(new GetImageRequest(id));
+        var res = await bus.InvokeAsync<GetImageRequestResult>(new GetImageRequest(id));
         if (!res.IsSuccess)
         {
             logger.LogError("Failed to get image.");
             return View("Error", new ErrorViewModel { RequestId = "Failed to get image" });
         }
-        
-        var image = res.Value.Image;
+
+        var image = res.Value!.ImageWithUrlDto;
 
         var textRes =
             await bus.InvokeAsync<GetImageTextRequestResult>(new GetImageTextRequest(id), timeout: 60.Seconds());
@@ -48,13 +48,13 @@ public class ImagesController(IMessageBus bus, ILogger<ImagesController> logger)
             return View("Error", new ErrorViewModel { RequestId = "Failed to retrieve image text" });
         }
 
-        var text = textRes.Value;
+        var text = textRes.Value!;
 
         var model = new ImageDetailModel
         {
             CreatedAt = image.CreatedAt,
             Name = image.Name,
-            ImageUrl = image.Url,
+            ImageUrl = image.ImageUrl,
             Text = text.Text
         };
 
