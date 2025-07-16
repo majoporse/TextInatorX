@@ -26,7 +26,7 @@ public record GetAllImagesHandlerRequest
             return new Result
             {
                 IsSuccess = false,
-                ErrorMessage = "An error occurred while retrieving images."
+                ErrorMessage = error.ErrorMessage 
             };
         }
     }

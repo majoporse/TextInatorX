@@ -25,7 +25,7 @@ public record DeleteImageHandlerRequest(Guid imageId)
             return new Result
             {
                 IsSuccess = false,
-                ErrorMessage = "An error occurred while deleting the image."
+                ErrorMessage = error.ErrorMessage
             };
         }
     }

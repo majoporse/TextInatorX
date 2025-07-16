@@ -17,6 +17,8 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.17"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="8.0.17"/>
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.ConfluentKafka" Version="0.1.0-alpha.2"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.12.0-beta.2"/>
     </ItemGroup>
 
     <ItemGroup>

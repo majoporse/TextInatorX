@@ -25,7 +25,7 @@ public record GetImageRequest(Guid ImageId)
             return new Result
             {
                 IsSuccess = false,
-                ErrorMessage = "An error occurred while retrieving the image."
+                ErrorMessage = error.ErrorMessage
             };
         }
     }

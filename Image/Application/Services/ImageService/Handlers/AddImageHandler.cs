@@ -25,7 +25,7 @@ public record AddImageHandlerRequest(Stream FileStream, string name)
             return new Result
             {
                 IsSuccess = false,
-                ErrorMessage = "An error occurred while adding the image."
+                ErrorMessage = error.ErrorMessage
             };
         }
     }

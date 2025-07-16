@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Confluent.Kafka.Extensions.OpenTelemetry" Version="0.4.0"/>
         <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0"/>
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.0-preview.5.25277.114"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.17">
@@ -18,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\TextInatorX.ServiceDefaults\TextInatorX.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\..\TextInatorX.ServiceDefaults\TextInatorX.ServiceDefaults.csproj"/>
         <ProjectReference Include="..\Application\Application.csproj"/>
         <ProjectReference Include="..\BlobStorage\BlobStorage.csproj"/>
         <ProjectReference Include="..\..\Contracts\Contracts.csproj"/>

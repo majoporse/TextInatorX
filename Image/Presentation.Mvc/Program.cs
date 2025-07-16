@@ -1,15 +1,34 @@
 using Application;
 using BlobStorage;
 using Confluent.Kafka;
+using Confluent.Kafka.Extensions.OpenTelemetry;
 using Contracts.Events;
 using JasperFx.Resources;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Persistence;
 using Presentation.Mvc.Hubs;
+using TextInatorX.ServiceDefaults;
 using Wolverine;
 using Wolverine.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
+
+builder.Services.AddOpenTelemetry()
+    .WithTracing(t => t
+        .SetResourceBuilder(ResourceBuilder
+            .CreateDefault()
+            .AddService("OtelWebApi")) // <-- sets service name
+
+        // This is absolutely necessary to collect the Wolverine
+        // open telemetry tracing information in your application
+        .AddSource("Wolverine")
+        .AddAspNetCoreInstrumentation()
+        .AddConfluentKafkaInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation());
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Host.UseWolverine(opts =>
@@ -62,7 +81,7 @@ builder.Host.UseWolverine(opts =>
     // This will get fancier in the near future
     opts.PublishMessage<ImageUploadedEvent>().ToKafkaTopic(nameof(ImageUploadedEvent));
     opts.ListenToKafkaTopic(nameof(ImageUploadedEventResult));
-    
+
     opts.ListenToKafkaTopic(nameof(GetImageTextRequestResult));
     opts.PublishMessage<GetImageTextRequest>().ToKafkaTopic(nameof(GetImageTextRequest));
 

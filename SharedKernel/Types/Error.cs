@@ -4,7 +4,7 @@ public record Res<T>
 {
     public bool IsSuccess { get; set; }
     public string ErrorMessage { get; set; }
-    public T Value { get; set; }
+    public T? Value { get; set; }
 
     public static Err Error()
     {
