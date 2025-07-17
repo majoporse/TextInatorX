@@ -22,7 +22,7 @@ Each microservice leverages **Wolverine**, a powerful mediator framework with bu
 
 ### Frontend Service
 
-Built with **ASP.NET MVC** and lightly styled with Bootstrap, the Frontend Service acts as the gateway for user requests, passing them on to other services via Kafka.
+Built with **ASP.NET MVC** and lightly styled with Bootstrap, the Frontend Service acts as the gateway for user requests, passing them on to other services via Kafka. This service also leverages SignalR for real-time communication with clients.
 
 ### Image Storage Service
 

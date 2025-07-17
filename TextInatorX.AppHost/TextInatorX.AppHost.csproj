@@ -16,8 +16,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ImageProcessor\ImageProcessor\ImageProcessor.csproj"/>
-        <ProjectReference Include="..\ImageStorage\ImageStorage.csproj"/>
-        <ProjectReference Include="..\Image\Presentation.Mvc\Presentation.Mvc.csproj"/>
+        <ProjectReference Include="..\ImageStorage\ImageStorage\ImageStorage.csproj"/>
+        <ProjectReference Include="..\Frontend\Presentation.Mvc\Presentation.Mvc.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,18 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.Mvc", "Image\Presentation.Mvc\Presentation.Mvc.csproj", "{99F7B2D2-B777-4C86-8803-D36788FD3F2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.Mvc", "Frontend\Presentation.Mvc\Presentation.Mvc.csproj", "{99F7B2D2-B777-4C86-8803-D36788FD3F2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Image\Domain\Domain.csproj", "{FF009E00-873F-4D06-BB7E-4BE21C62CE77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "ImageStorage\Domain\Domain.csproj", "{FF009E00-873F-4D06-BB7E-4BE21C62CE77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Image\Application\Application.csproj", "{C12DC8AB-2A48-4D30-85C6-D47B99944AE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "ImageStorage\Application\Application.csproj", "{C12DC8AB-2A48-4D30-85C6-D47B99944AE7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{ADA368BE-C3AA-40BF-BDAB-BAB56E90782F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Image\Persistence\Persistence.csproj", "{8E10B09E-8B64-40A8-A6CD-74CD461E4150}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "ImageStorage\Persistence\Persistence.csproj", "{8E10B09E-8B64-40A8-A6CD-74CD461E4150}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlobStorage", "Image\BlobStorage\BlobStorage.csproj", "{CDB5C48F-5520-4084-AC58-DDF0D2BF4DDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlobStorage", "ImageStorage\BlobStorage\BlobStorage.csproj", "{CDB5C48F-5520-4084-AC58-DDF0D2BF4DDD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageStorage", "ImageStorage", "{231EC0AD-629A-4AF7-AF07-90610B291F9D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageStorage", "ImageStorage\ImageStorage", "{231EC0AD-629A-4AF7-AF07-90610B291F9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageProcessor", "ImageProcessor", "{3F3732D9-DFD7-45C5-A9EC-DE5A4051F34F}"
 EndProject
@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextInatorX.ServiceDefaults
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{92BF4120-0D49-493A-BA33-4215B67B9342}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageStorage", "ImageStorage\ImageStorage.csproj", "{72998E8B-229D-4F26-A1EA-7892C76285CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageStorage", "ImageStorage\ImageStorage\ImageStorage.csproj", "{72998E8B-229D-4F26-A1EA-7892C76285CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
