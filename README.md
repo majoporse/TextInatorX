@@ -2,6 +2,8 @@
 
 You've stumbled upon the source code for **TextInatorX**, my personal hobby project. This repository showcases a web application designed to extract text from images. While the OCR (Optical Character Recognition) functionality is central, the project's primary focus is on demonstrating a robust and scalable **microservice architecture**. Communication between these services is orchestrated using **Kafka**.
 
+It's important to note that this project was primarily a practical learning exercise for me. My main goals were to gain hands-on experience with Kafka and understand how to integrate OCR capabilities in C#. Therefore, while the architecture is detailed, TextInatorX is not intended as a production-ready example or a blueprint for others, but rather a practical exploration of these technologies.
+
 -----
 
 ## Architecture Overview
@@ -12,7 +14,7 @@ TextInatorX is built around three core microservices, seamlessly integrated usin
 * **Image Storage Service**: Manages image data and metadata.
 * **Image Processing Service**: Handles the heavy lifting of text extraction.
 
-Each microservice leverages **Wolverine**, a powerful mediator framework with built-in Kafka support, for efficient internal communication.
+Each microservice leverages **Wolverine**, a powerful mediator framework with built-in Kafka support, for efficient communication.
 
 -----
 
@@ -36,7 +38,7 @@ Another **ASP.NET Core** service powered by Wolverine, the Image Processing Serv
 
 ### .NET Aspire
 
-**TextInatorX** harnesses the power of **.NET Aspire** for effortless launch and comprehensive observability of its microservices. Each project includes its own Aspire configuration, defining specific observability settings and health checks. Currently, all microservices are configured to run with three replicas each, ensuring high availability.
+**TextInatorX** harnesses the power of **.NET Aspire** for effortless launch and comprehensive observability of its microservices. Each project includes its own telemetry configuration, defining specific observability settings and health checks. Currently, all microservices are configured to run with three replicas each, ensuring high availability.
 
 ### Configuration
 
