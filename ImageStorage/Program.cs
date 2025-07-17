@@ -42,7 +42,7 @@ builder.Host.UseWolverine(opts =>
             // configure both producers and consumers
             client.BootstrapServers = "localhost:9094";
             client.ClientId = "image-storage-service";
-            client.Acks = Acks.None;
+            client.Acks = Acks.All;
             client.MessageMaxBytes = 10000000; // 10 MB
             client.AllowAutoCreateTopics = true;
         })
@@ -50,12 +50,12 @@ builder.Host.UseWolverine(opts =>
         {
             // configure only consumers
             consumer.GroupId = "image-storage-service-group";
-            // consumer.AutoOffsetReset = AutoOffsetReset.Earliest;
+            consumer.AutoOffsetReset = AutoOffsetReset.Earliest;
         })
         .ConfigureProducers(producer =>
         {
             // configure only producers
-            // producer.EnableIdempotence = true;
+            producer.EnableIdempotence = true;
             producer.MessageTimeoutMs = 10000;
         })
 
