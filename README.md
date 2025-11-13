@@ -70,3 +70,10 @@ To run TextInatorX locally, you'll need the **.NET 9 SDK** and **Docker** instal
     ```bash
     dotnet run --project TextInatorX.Apphost --launch-profile https
     ```
+    
+## IMPORTANT
+please check if your project contains tessdata folder inside the imageprocessing application layer.
+if not run this command:
+```bash
+git submodule update --init --recursive
+```

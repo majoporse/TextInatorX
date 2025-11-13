@@ -2,7 +2,7 @@
 services:
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
-    container_name: "azurite"
+    container_name: "azurite-textinator"
     hostname: azurite
     restart: always
     volumes:
