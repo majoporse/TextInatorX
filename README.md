@@ -5,6 +5,10 @@ You've stumbled upon the source code for **TextInatorX**, my personal hobby proj
 It's important to note that this project was primarily a practical learning exercise for me. My main goals were to gain hands-on experience with Kafka and understand how to integrate OCR capabilities in C#. Therefore, while the architecture is detailed, TextInatorX is not intended as a production-ready example or a blueprint for others, but rather a practical exploration of these technologies.
 
 -----
+## Showcase
+
+https://github.com/user-attachments/assets/5c282f0e-1094-46c0-9ba0-67f2ffb57410
+
 
 ## Architecture Overview
 
